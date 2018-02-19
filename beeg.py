@@ -6,43 +6,55 @@ import json
 from pprint import pprint
 
 # going to need to figure out how they decide on the numbers after v6/
-data = requests.get("https://beeg.com/api/v6/2511/index/main/0/pc").json()
-# print data
+data = requests.get("https://beeg.com/api/v6/2512/index/main/0/pc").json()
+# # print data
 
 idArr = []
-titleArr = []
+# titleArr = []
 for item in data['videos']:
   idArr.append(item['id'])
-  titleArr.append(item['title'])
+#   titleArr.append(item['title'])
 
-mainDump = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
-tagDump = json.dumps(data['tags'], sort_keys=True, indent=4, separators=(',', ': '))
-idDump = json.dumps(idArr, sort_keys=True, indent=4, separators=(',', ': '))
-titleDump = json.dumps(titleArr, sort_keys=True, indent=4, separators=(',', ': '))
 
-# for /v6/2509
-# files = [['beeg.json', mainDump], ['tags.json', tagDump], ['vid_ids.json', idDump], ['titles.json', titleDump]]
-# for /v6/2511
-files = [['beeg2.json', mainDump], ['tags2.json', tagDump], ['vid_ids2.json', idDump], ['titles2.json', titleDump]]
+# print idArr
+
+# mainDump = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
+# tagDump = json.dumps(data['tags'], sort_keys=True, indent=4, separators=(',', ': '))
+# idDump = json.dumps(idArr, sort_keys=True, indent=4, separators=(',', ': '))
+# titleDump = json.dumps(titleArr, sort_keys=True, indent=4, separators=(',', ': '))
+
+# files = [['beeg3.json', mainDump], ['tags3.json', tagDump], ['vid_ids3.json', idDump], ['titles3.json', titleDump]]
 # track and only print if different
 
-def getVideoData(id):
-  idStr = "https://beeg.com/api/v6/2511/video/" + id
-  data = requests.get(idStr).json()
-  dump = json.dumps({"title": data['title'], "tags": data['tags']}, sort_keys=True, indent=4, separators=(',', ': '))
-  fo = open('vidInfo2.json', 'a')
-  fo.write(dump)
-  fo.close()
+# fo = open('./')
 
-# getVideoData(idArr[0])
-# for item in idArr:
-#   getVideoData(item)
+# fo = open('./dump_2511/vidInfo2.json', 'a')
+numberOfAvailableVideos = len(idArr)
 
 # for file in files:
-#   fo = open(file[0], "a")
+#   fo = open("./dump_2512/" + file[0], "a")
 #   fo.write(file[1])
 #   fo.close()
 
+fo = open('./dump_2512/vidInfo3.json', 'a')
+
+def getVideoData(id):
+  idStr = "https://beeg.com/api/v6/2512/video/" + id
+  data = requests.get(idStr).json()
+  dump = json.dumps({"title": data['title'], "tags": data['tags']}, sort_keys=True, indent=4, separators=(',', ': '))
+  fo.write(dump)
+
+
+def constructDumpFile():
+  fo.write('[')
+  for index, item in enumerate(idArr):
+    getVideoData(item)
+    if index != numberOfAvailableVideos - 1:
+      fo.write(',')
+  fo.write(']')
+  fo.close()
+
+constructDumpFile()
 
 
 # one file to figure out what the root of the api is, and two imported sub-modules:

@@ -2,8 +2,8 @@
 
 import requests
 import json
-
-from pprint import pprint
+import urllib
+import re
 
 # going to need to figure out how they decide on the numbers after v6/
 data = requests.get("https://beeg.com/api/v6/2512/index/main/0/pc").json()
